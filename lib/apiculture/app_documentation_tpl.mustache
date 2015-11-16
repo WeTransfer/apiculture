@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="charset" contents="utf-8">
+    <title>API documentation</title>
+    <style type="text/css">
+    html {
+      background: #f0f0f0;
+      height: 100%;
+    }
+
+    body {
+      margin: 0 0 0 1.5rem;
+      padding: 1.5rem;
+      background: #fff;
+      min-height: 100%;
+      border-left: 1px solid #ddd;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: Arial, sans-serif;
+      font-weight: normal;
+    }
+
+    h1, h2, h3, h4, h5, h6, p, table, ul, ol {
+      margin: 0 0 1rem;
+    }
+
+    h2 {
+      margin-bottom: .6rem;
+    }
+
+    h2:first-word {
+      color: red;
+    }
+
+    h3 {
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+
+      margin-bottom: 0;
+      font-weight: bold;
+      background: #3F92FF;
+      max-width: 60rem;
+      font-size: .95em;
+      padding: .5rem 1rem;
+      color: #fff;
+    }
+
+    h3 + table.apiculture-table {
+      background: #F9F9F9;
+      padding: 1rem;
+      border: 1px solid #ddd;
+    }
+
+    .apiculture-table {
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+
+      border-spacing: 0;
+      max-width: 60rem;
+      margin: 0 0 2rem;
+      width: 100%;
+    }
+
+    table.apiculture-table + h3,
+    table.apiculture-table + table.apiculture-table {
+      margin-top: -1rem;
+      /* decreases table bottom margin for double table */
+    }
+
+    table.apiculture-table td,
+    table.apiculture-table th {
+      vertical-align: top;
+      text-align: left;
+      font-size: .9em;
+    }
+
+    table.apiculture-table th {
+      border-bottom: 1px solid #CBCBCB;
+      padding: .2rem .5rem .5rem;
+    }
+
+    table.apiculture-table td {
+      padding: .2rem .5rem;
+    }
+
+    tt, code {
+      font-family: 'Lucida Console', Monaco, monospace;
+      font-weight: normal;
+      font-size: .9em;
+    }
+    </style>
+  </head>
+  
+  <body>
+    {{& html_fragment }}
+  </body>
+</html>

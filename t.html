@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="charset" contents="utf-8">
+    <title>API documentation</title>
+    <style type="text/css">
+    html {
+      background: #f0f0f0;
+      height: 100%;
+    }
+
+    body {
+      margin: 0 0 0 1.5rem;
+      padding: 1.5rem;
+      background: #fff;
+      min-height: 100%;
+      border-left: 1px solid #ddd;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: Arial, sans-serif;
+      font-weight: normal;
+    }
+
+    h1, h2, h3, h4, h5, h6, p, table, ul, ol {
+      margin: 0 0 1rem;
+    }
+
+    h2 {
+      margin-bottom: .6rem;
+    }
+
+    h2:first-word {
+      color: red;
+    }
+
+    h3 {
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+
+      margin-bottom: 0;
+      font-weight: bold;
+      background: #3F92FF;
+      max-width: 60rem;
+      font-size: .95em;
+      padding: .5rem 1rem;
+      color: #fff;
+    }
+
+    h3 + table.apiculture-table {
+      background: #F9F9F9;
+      padding: 1rem;
+      border: 1px solid #ddd;
+    }
+
+    .apiculture-table {
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+
+      border-spacing: 0;
+      max-width: 60rem;
+      margin: 0 0 2rem;
+      width: 100%;
+    }
+
+    table.apiculture-table + h3,
+    table.apiculture-table + table.apiculture-table {
+      margin-top: -1rem;
+      /* decreases table bottom margin for double table */
+    }
+
+    table.apiculture-table td,
+    table.apiculture-table th {
+      vertical-align: top;
+      text-align: left;
+      font-size: .9em;
+    }
+
+    table.apiculture-table th {
+      border-bottom: 1px solid #CBCBCB;
+      padding: .2rem .5rem .5rem;
+    }
+
+    table.apiculture-table td {
+      padding: .2rem .5rem;
+    }
+
+    tt, code {
+      font-family: 'Lucida Console', Monaco, monospace;
+      font-weight: normal;
+      font-size: .9em;
+    }
+    </style>
+  </head>
+  
+  <body>
+    <section class="apiculture-verbatim"><p>This API is very important. Because it has to do with pancakes.</p>
+</section>
+
+<section class="apiculture-verbatim"><p>Documentation built on 2015-11-15 16:33</p>
+</section>
+
+<section class="apiculture-method"><h2>POST /pancakes</h2>
+
+<p>Order a pancake</p>
+
+<h3>Request parameters</h3>
+
+<table class="apiculture-table"><tr><th>Name</th><th>Required</th><th>Type after cast</th><th>Description</th></tr><tr><td><tt>diameter</tt></td><td>Yes</td><td>Integer</td><td>Diameter of the pancake</td></tr><tr><td><tt>topping</tt></td><td>No</td><td>String</td><td>Type of topping</td></tr></table>
+
+
+<h3>Possible responses</h3>
+
+<table class="apiculture-table"><tr><th>HTTP status code</th><th>What happened</th><th>Example payload</th></tr><tr><td><b>200</b></td><td>When the pancake is created succesfully</td><td><pre><code>{
+  "id": "abdef..c21"
+}</code></pre></td></tr></table>
+
+</section>
+
+<section class="apiculture-method"><h2>GET /pancake/:id</h2>
+
+<p>Check the pancake status</p>
+
+<h3>URL parameters</h3>
+
+<table class="apiculture-table"><tr><th>Name</th><th>Description</th></tr><tr><td><tt>:id</tt></td><td>Pancake ID to check status on</td></tr></table>
+
+
+<h3>Possible responses</h3>
+
+<table class="apiculture-table"><tr><th>HTTP status code</th><th>What happened</th><th>Example payload</th></tr><tr><td><b>200</b></td><td>When the pancake is found</td><td><pre><code>{
+  "status": "Baking"
+}</code></pre></td></tr><tr><td><b>404</b></td><td>When no such pancake exists</td><td><pre><code>{
+  "status": "No such pancake"
+}</code></pre></td></tr></table>
+
+</section>
+
+<section class="apiculture-method"><h2>DELETE /pancake/:id</h2>
+
+<p>Throw away the pancake</p>
+
+<h3>URL parameters</h3>
+
+<table class="apiculture-table"><tr><th>Name</th><th>Description</th></tr><tr><td><tt>:id</tt></td><td>Pancake ID to delete</td></tr></table>
+
+
+
+</section>
+  </body>
+</html>
