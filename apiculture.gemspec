@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Julik Tarkhanov", "WeTransfer"]
-  s.date = "2015-11-15"
+  s.date = "2015-11-16"
   s.description = "A toolkit for building REST APIs on top of Sinatra"
   s.email = "me@julik.nl"
   s.extra_rdoc_files = [
@@ -19,9 +19,6 @@ Gem::Specification.new do |s|
     "README.md"
   ]
   s.files = [
-    ".document",
-    ".gitlab-ci.yml",
-    ".rspec",
     "Gemfile",
     "LICENSE.txt",
     "README.md",
@@ -43,7 +40,7 @@ Gem::Specification.new do |s|
     "spec/apiculture_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = "https://gitlab.wetransfer.net/julik/apiculture"
+  s.homepage = "https://github.com/WeTransfer/apiculture"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.2.2"
   s.summary = "Sweet API sauce on top of Sintra"
