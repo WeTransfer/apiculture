@@ -15,6 +15,7 @@ A simple API definition DSL with simple premises:
  
 ## A taste of honey
 
+```ruby
     class Api::V2 < Sinatra::Base
       
       use Rack::Parser, :content_types => {
@@ -41,20 +42,25 @@ A simple API definition DSL with simple premises:
         json Person.find(person_id).to_json
       end
     end
+```
 
 ## Generating documentation
 
 For the aforementioned example:
 
+```ruby
     File.open('API.html', 'w') do |f|
       f << Api::V2.api_documentation.to_html
     end
+```
 
 or to get it in Markdown:
 
+```ruby
     File.open('API.md', 'w') do |f|
       f << Api::V2.api_documentation.to_markdown
     end
+```
 
 ## Running the tests
 
