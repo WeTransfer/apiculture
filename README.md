@@ -16,32 +16,32 @@ A simple API definition DSL with simple premises:
 ## A taste of honey
 
 ```ruby
-    class Api::V2 < Sinatra::Base
-      
-      use Rack::Parser, :content_types => {
-        'application/json'  => JSON.method(:load).to_proc
-      }
-      
-      extend Apiculture
-      
-      desc 'Create a Contact'
-      required_param :name, 'Name of the person', String
-      param :email, 'Email address of the person', String
-      param :phone, 'Phone number', String, cast: ->(v) { v.scan(/\d/).flatten.join }
-      param :notes, 'Notes about this person', String
-      api_method :post, '/contacts' do
-        # anything allowed within Sinatra actions is allowed here, and
-        # works exactly the same - but we suggest using Actions instead.
-        action_result CreateContact # uses Api::V2::CreateContact
-      end
-      
-      desc 'Fetch a Contact'
-      route_param :id, 'ID of the person'
-      responds_with 200, 'Contact data', {name: 'John Appleseed', id: "ac19...fefg"}
-      api_method :get, '/contacts/:id' do | person_id |
-        json Person.find(person_id).to_json
-      end
-    end
+class Api::V2 < Sinatra::Base
+  
+  use Rack::Parser, :content_types => {
+    'application/json'  => JSON.method(:load).to_proc
+  }
+  
+  extend Apiculture
+  
+  desc 'Create a Contact'
+  required_param :name, 'Name of the person', String
+  param :email, 'Email address of the person', String
+  param :phone, 'Phone number', String, cast: ->(v) { v.scan(/\d/).flatten.join }
+  param :notes, 'Notes about this person', String
+  api_method :post, '/contacts' do
+    # anything allowed within Sinatra actions is allowed here, and
+    # works exactly the same - but we suggest using Actions instead.
+    action_result CreateContact # uses Api::V2::CreateContact
+  end
+  
+  desc 'Fetch a Contact'
+  route_param :id, 'ID of the person'
+  responds_with 200, 'Contact data', {name: 'John Appleseed', id: "ac19...fefg"}
+  api_method :get, '/contacts/:id' do | person_id |
+    json Person.find(person_id).to_json
+  end
+end
 ```
 
 ## Generating documentation
@@ -49,26 +49,26 @@ A simple API definition DSL with simple premises:
 For the aforementioned example:
 
 ```ruby
-    File.open('API.html', 'w') do |f|
-      f << Api::V2.api_documentation.to_html
-    end
+File.open('API.html', 'w') do |f|
+  f << Api::V2.api_documentation.to_html
+end
 ```
 
 or to get it in Markdown:
 
 ```ruby
-    File.open('API.md', 'w') do |f|
-      f << Api::V2.api_documentation.to_markdown
-    end
+File.open('API.md', 'w') do |f|
+  f << Api::V2.api_documentation.to_markdown
+end
 ```
 
 ## Running the tests
 
-    $bundle exec rspec
+    $ bundle exec rspec
 
 If you want to also examine the HTML documentation that gets built during the test, set `SHOW_TEST_DOC` in env:
 
-    $SHOW_TEST_DOC=yes bundle exec rspec
+    $ SHOW_TEST_DOC=yes bundle exec rspec
 
 Note that this requires presence of the `open` commandline utility (should be available on both OSX and Linux).
 
