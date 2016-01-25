@@ -2,6 +2,8 @@
 
 A little toolkit for building RESTful API backends on top of Sinatra.
 
+[![Build Status](https://travis-ci.org/WeTransfer/apiculture.svg?branch=master)](https://travis-ci.org/WeTransfer/apiculture)
+
 ## Ideas
 
 A simple API definition DSL with simple premises:
