@@ -27,6 +27,11 @@ describe "Apiculture.api_documentation" do
       route_param :id, 'Pancake ID to delete'
       api_method :delete, '/pancake/:id' do
       end
+
+      desc 'Pancake ingredients are in the URL'
+      route_param :topping_id, 'Pancake topping ID', Fixnum, cast: :to_i
+      api_method :get, '/pancake/with/:topping_id' do |topping_id|
+      end
     end
   }
   
