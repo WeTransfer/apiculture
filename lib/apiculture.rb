@@ -35,8 +35,7 @@ module Apiculture
     def name_as_string; name.to_s; end
   end
   
-  class RouteParameter < Struct.new(:name, :description)
-    def name_as_string; name.to_s; end
+  class RouteParameter < Parameter
   end
   
   class PossibleResponse < Struct.new(:http_status_code, :description, :jsonable_object_example)
@@ -119,9 +118,9 @@ module Apiculture
   # Route parameters are always required, and all the parameters specified
   # using +route_param+ should also be included in the path given for the route
   # definition
-  def route_param(name, description)
+  def route_param(name, description, ruby_type = String, cast: IDENTITY_PROC)
     @apiculture_action_definition ||= ActionDefinition.new
-    @apiculture_action_definition.route_parameters << RouteParameter.new(name, description)
+    @apiculture_action_definition.route_parameters << RouteParameter.new(name, description, required=false, ruby_type, cast)
   end
   
   # Add a possible response, specifying the code and the JSON Response by example.
@@ -245,12 +244,22 @@ module Apiculture
     # Pick out all the defined parameters and set up a block that can validate them
     # when the action is called. With that, set up the actual Sinatra method that will
     # respond to the request.
-    parametric_checker_proc = parametric_validator_proc_from(action_def.parameters)
+    parametric_checker_proc = parametric_validator_proc_from(action_def.parameters + action_def.route_parameters)
     public_send(http_verb, path, options) do |*matched_sinatra_route_params|
-      # Verify the parameters first
+      route_params = []
+      action_def.route_parameters.each_with_index do |route_param, index|
+        # Apply the type cast and save it (since using our override we can mutate the params)
+        value_after_type_cast = AC_APPLY_TYPECAST_PROC.call(route_param.cast_proc_or_method, params[route_param.name])
+        route_params[index] = value_after_type_cast
+        
+        # Ensure the typecast value adheres to the enforced Ruby type
+        AC_CHECK_TYPE_PROC.call(route_param, route_params[index])
+        # ..permit it in the strong parameters if we support them
+        AC_PERMIT_PROC.call(route_params, route_param.name)
+      end
       instance_exec(&parametric_checker_proc)
       # Execute the original action via instance_exec, passing along the route args
-      instance_exec(*matched_sinatra_route_params, &blk)
+      instance_exec(*route_params, &blk)
     end
     
     # Reset for the subsequent action definition
