@@ -191,7 +191,77 @@ describe "Apiculture" do
       post '/thing', {number: '123'}
       expect(last_response.body).to eq('Total success')
     end
+
+    it 'ensures current behaviour for route params is not changed', run: true do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+      
+        route_param :number, "Number of the thing"
+        api_method :post, '/thing/:number' do
+          raise "Casted to int" if params[:number] == 123
+          'Total success'
+        end
+      end
+      post '/thing/123'
+      expect(last_response.body).to eq('Total success')
+    end
+
+    it 'ensures current behaviour when no route params are present does not change', run: true do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+      
+        param :number, "Number of the thing", Integer, cast: :to_i
+        api_method :post, '/thing' do
+          raise "Behaviour changed" unless params[:number] == 123
+          'Total success'
+        end
+      end
+      post '/thing', {number: '123'}
+      expect(last_response.body).to eq('Total success')
+    end
+
+    it 'applies a symbol typecast by calling a method on the route parameter value', run: true do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+      
+        route_param :number, "Number of the thing", Integer, :cast => :to_i
+        api_method :post, '/thing/:number' do
+          raise "Not cast" unless params[:number] == 123
+          'Total success'
+        end
+      end
+      post '/thing/123'
+      expect(last_response.body).to eq('Total success')
+    end
+
     
+    it 'merges route_params and regular params', run: true do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+      
+        param :number, "Number of the thing", Integer, :cast => :to_i
+        route_param :id, "Id of the thingy", Fixnum, :cast => :to_i
+        route_param :awesome, "Hash of the thingy"
+
+        api_method :post, '/thing/:id/:awesome' do |id|
+          raise 'Not merged' unless params.has_key?("id")
+          raise 'Not merged' unless params.has_key?("awesome")
+          'Thanks'
+        end
+      end
+      post '/thing/1/true', {number: '123'}
+      expect(last_response.body).to eq('Thanks')
+    end
+
+
     it 'applies a Proc typecast by calling the proc (for example - for ISO8601 time)' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
