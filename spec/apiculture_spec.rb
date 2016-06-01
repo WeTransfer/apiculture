@@ -192,7 +192,7 @@ describe "Apiculture" do
       expect(last_response.body).to eq('Total success')
     end
 
-    it 'ensures current behaviour for route params is not changed', run: true do
+    it 'ensures current behaviour for route params is not changed' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
         settings.raise_errors = true
@@ -208,7 +208,7 @@ describe "Apiculture" do
       expect(last_response.body).to eq('Total success')
     end
 
-    it 'ensures current behaviour when no route params are present does not change', run: true do
+    it 'ensures current behaviour when no route params are present does not change' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
         settings.raise_errors = true
@@ -224,7 +224,7 @@ describe "Apiculture" do
       expect(last_response.body).to eq('Total success')
     end
 
-    it 'applies a symbol typecast by calling a method on the route parameter value', run: true do
+    it 'applies a symbol typecast by calling a method on the route parameter value' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
         settings.raise_errors = true
@@ -240,8 +240,25 @@ describe "Apiculture" do
       expect(last_response.body).to eq('Total success')
     end
 
+
+    it 'cast block arguments to the right type', run: true do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+      
+        route_param :number, "Number of the thing", Fixnum, :cast => :to_i
+        api_method :post, '/thing/:number' do |number|
+          raise "Not cast" unless number.class == Fixnum
+          'Total success'
+        end
+      end
+      post '/thing/123'
+      expect(last_response.body).to eq('Total success')
+    end
+
     
-    it 'merges route_params and regular params', run: true do
+    it 'merges route_params and regular params' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
         settings.raise_errors = true

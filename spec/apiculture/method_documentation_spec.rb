@@ -63,6 +63,24 @@ describe Apiculture::MethodDocumentation do
     expect(generated_html).not_to include('<h3>Request parameters</h3>')
   end
   
+  it 'generates HTML from an ActionDefinition with a casted route param' do
+    definition = Apiculture::ActionDefinition.new
+    
+    definition.description = "This adds a topping to a pancake"
+    
+    definition.route_parameters << Apiculture::RouteParameter.new(:topping_id, 'ID of the pancake topping', Fixnum, cast: :to_i)
+    definition.http_verb = 'get'
+    definition.path = '/pancake/:topping_id'
+    
+    documenter = described_class.new(definition)
+    
+    generated_html = documenter.to_html_fragment
+    generated_markdown = documenter.to_markdown
+    expect(generated_html).to include('<h3>URL parameters</h3>')
+    expect(generated_html).to include('Type after cast')
+  end
+
+
   it 'generates Markdown from an ActionDefinition with a mountpoint' do
     definition = Apiculture::ActionDefinition.new
     
