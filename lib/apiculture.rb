@@ -35,8 +35,7 @@ module Apiculture
     def name_as_string; name.to_s; end
   end
   
-  class RouteParameter < Struct.new(:name, :description)
-    def name_as_string; name.to_s; end
+  class RouteParameter < Parameter
   end
   
   class PossibleResponse < Struct.new(:http_status_code, :description, :jsonable_object_example)
@@ -119,9 +118,9 @@ module Apiculture
   # Route parameters are always required, and all the parameters specified
   # using +route_param+ should also be included in the path given for the route
   # definition
-  def route_param(name, description)
+  def route_param(name, description, ruby_type = String, cast: IDENTITY_PROC)
     @apiculture_action_definition ||= ActionDefinition.new
-    @apiculture_action_definition.route_parameters << RouteParameter.new(name, description)
+    @apiculture_action_definition.route_parameters << RouteParameter.new(name, description, required=false, ruby_type, cast)
   end
   
   # Add a possible response, specifying the code and the JSON Response by example.
@@ -245,7 +244,7 @@ module Apiculture
     # Pick out all the defined parameters and set up a block that can validate them
     # when the action is called. With that, set up the actual Sinatra method that will
     # respond to the request.
-    parametric_checker_proc = parametric_validator_proc_from(action_def.parameters)
+    parametric_checker_proc = parametric_validator_proc_from(action_def.parameters + action_def.route_parameters)
     public_send(http_verb, path, options) do |*matched_sinatra_route_params|
       # Verify the parameters first
       instance_exec(&parametric_checker_proc)
