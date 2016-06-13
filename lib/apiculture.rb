@@ -231,10 +231,9 @@ module Apiculture
         seen_params[e] = true
       end
     end
-    
     # Ensure the path has the route parameters that were predeclared
     action_def.route_parameters.map(&:name).each do | route_parameter_key |
-      unless path.include?(':%s' % route_parameter_key) || path.include?('<%s>' % route_parameter_key)
+      unless path.to_s.include?(':%s' % route_parameter_key) || path.is_a?(Regexp) && path.named_captures.keys.include?(route_parameter_key.to_s)
         raise RouteParameterNotInPath.new("Parameter :#{route_parameter_key} not present in path #{path.inspect}")
       end
     end
