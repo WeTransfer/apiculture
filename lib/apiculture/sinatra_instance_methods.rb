@@ -6,8 +6,9 @@ module Apiculture::SinatraInstanceMethods
   
   # Convert the given structure to JSON, set the content-type and
   # return the JSON string
-  def json_response(structure)
+  def json_response(structure, status: 200)
     content_type :json
+    status status
     JSON.pretty_generate(structure)
   end
   

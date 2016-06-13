@@ -314,7 +314,19 @@ describe "Apiculture" do
       parsed_body = JSON.load(last_response.body)
       expect(parsed_body['foo']).to eq('bar')
     end
-    
+    it 'adds support for json_response to set http status code', run: true do
+      @app_class = Class.new(Sinatra::Base) do
+        extend Apiculture
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        api_method :post, '/some-json' do
+          json_response({foo: 'bar'}, status: 201)
+        end
+      end
+      
+      post '/some-json'
+      expect(last_response.status).to eq(201)
+    end
     it 'adds support for json_halt' do
       @app_class = Class.new(Sinatra::Base) do
         extend Apiculture
