@@ -132,7 +132,7 @@ class Apiculture::MethodDocumentation
         html.tr do
           html.td { html.tt(param.name.to_s) }
           html.td(param.required ? 'Yes' : 'No')
-          html.td(param.ruby_type.to_s)
+          html.td(param.matchable.inspect)
           html.td(param.description.to_s)
         end
       end

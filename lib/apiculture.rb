@@ -23,14 +23,14 @@ module Apiculture
   }
   
   AC_CHECK_TYPE_PROC = ->(param, value) {
-    value.is_a?(param.ruby_type) or raise ParameterTypeMismatch.new(param, value.class)
+    param.matchable === value or raise ParameterTypeMismatch.new(param, value.class)
   }
   
   AC_PERMIT_PROC = ->(maybe_strong_params, param_name) {
     maybe_strong_params.permit(param_name) if maybe_strong_params.respond_to?(:permit)
   }
   
-  class Parameter < Struct.new(:name, :description, :required, :ruby_type, :cast_proc_or_method)
+  class Parameter < Struct.new(:name, :description, :required, :matchable, :cast_proc_or_method)
     # Return Strings since Sinatra prefers string keys for params{}
     def name_as_string; name.to_s; end
   end
@@ -103,24 +103,24 @@ module Apiculture
   end
   
   # Add an optional parameter for the API call
-  def param(name, description, ruby_type, cast: IDENTITY_PROC)
+  def param(name, description, matchable, cast: IDENTITY_PROC)
     @apiculture_action_definition ||= ActionDefinition.new
-    @apiculture_action_definition.parameters << Parameter.new(name, description, required=false, ruby_type, cast)
+    @apiculture_action_definition.parameters << Parameter.new(name, description, required=false, matchable, cast)
   end
   
   # Add a requred parameter for the API call
-  def required_param(name, description, ruby_type, cast: IDENTITY_PROC)
+  def required_param(name, description, matchable, cast: IDENTITY_PROC)
     @apiculture_action_definition ||= ActionDefinition.new
-    @apiculture_action_definition.parameters << Parameter.new(name, description, required=true, ruby_type, cast)
+    @apiculture_action_definition.parameters << Parameter.new(name, description, required=true, matchable, cast)
   end
   
   # Describe a parameter that has to be included in the URL of the API call.
   # Route parameters are always required, and all the parameters specified
   # using +route_param+ should also be included in the path given for the route
   # definition
-  def route_param(name, description, ruby_type = String, cast: IDENTITY_PROC)
+  def route_param(name, description, matchable = String, cast: IDENTITY_PROC)
     @apiculture_action_definition ||= ActionDefinition.new
-    @apiculture_action_definition.route_parameters << RouteParameter.new(name, description, required=false, ruby_type, cast)
+    @apiculture_action_definition.route_parameters << RouteParameter.new(name, description, required=false, matchable, cast)
   end
   
   # Add a possible response, specifying the code and the JSON Response by example.
@@ -147,9 +147,9 @@ module Apiculture
   # Gets raised when a parameter is supplied and has a wrong type
   class ParameterTypeMismatch < ValidationError
     def initialize(ac_parameter, received_ruby_type)
-      parameter_name, expected_type = ac_parameter.name, ac_parameter.ruby_type
+      parameter_name, expected_type = ac_parameter.name, ac_parameter.matchable
       received_type = received_ruby_type
-      super "Received #{received_type}, expected #{expected_type} for :#{parameter_name}"
+      super "Received #{received_type}, expected #{expected_type.inspect} for :#{parameter_name}"
     end
   end
   

@@ -149,7 +149,33 @@ describe "Apiculture" do
         post '/thing', {number: '123'}
       }.to raise_error('Received String, expected Integer for :number')
     end
-    
+
+    it 'supports an arbitrary object with === as a type specifier for a parameter' do
+      custom_matcher = Class.new do
+        def ===(value)
+          value == "Magic word"
+        end
+      end.new
+      
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+      
+        required_param :pretty_please, "Only a magic word will do", custom_matcher
+        api_method :post, '/thing' do
+          'Ohai!'
+        end
+      end
+
+      post '/thing', {pretty_please: 'Magic word'}
+      expect(last_response).to be_ok
+
+      expect {
+        post '/thing', {pretty_please: 'not the magic word you are looking for'}
+      }.to raise_error(Apiculture::ParameterTypeMismatch)
+    end
+
     it 'suppresses parameters that are not defined in the action definition' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
