@@ -201,12 +201,16 @@ describe "Apiculture" do
         api_method :post, '/api-thing/:id_of_thing' do |id|
           raise 'id_of_thing must be passed' unless id == '123456'
           raise "id_of_thing must be present in params, but they were #{params.inspect}" unless params.keys.include?('id_of_thing')
+          raise "id_of_thing must be string-accessible in params" unless params['id_of_thing'] == '123456'
+          raise "id_of_thing must be symbol-accessible in params" unless params[:id_of_thing] == '123456'
           'All is well'
         end
 
         post '/vanilla-thing/:id_of_thing' do |id|
           raise 'id_of_thing must be passed' unless id == '123456'
           raise "id_of_thing must be present in params, but they were #{params.inspect}" unless params.keys.include?('id_of_thing')
+          raise "id_of_thing must be string-accessible in params" unless params['id_of_thing'] == '123456'
+          raise "id_of_thing must be symbol-accessible in params" unless params[:id_of_thing] == '123456'
           'All is well'
         end
       end
