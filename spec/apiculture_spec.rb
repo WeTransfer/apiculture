@@ -222,6 +222,22 @@ describe "Apiculture" do
       expect(last_response).to be_ok
     end
 
+    it 'does not clobber the status set in a separate mutating call when using json_response' do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+
+        api_method :post, '/api/:id' do
+          status 201
+          json_response({was_created: true})
+        end
+      end
+      
+      post '/api/123'
+      expect(last_response.status).to eq(201)
+    end
+    
     it 'raises when describing a route parameter that is not included in the path' do
       expect {
         Class.new(Sinatra::Base) do

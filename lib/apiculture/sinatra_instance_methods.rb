@@ -3,12 +3,13 @@ require 'json'
 # Some sugary methods for use within Sinatra, when responding to a request/rendering JSON
 module Apiculture::SinatraInstanceMethods
   NEWLINE = "\n"
+  DEFAULT = :__default__
   
   # Convert the given structure to JSON, set the content-type and
   # return the JSON string
-  def json_response(structure, status: 200)
+  def json_response(structure, status: DEFAULT)
     content_type :json
-    status status
+    status(status) unless status == DEFAULT
     JSON.pretty_generate(structure)
   end
   
