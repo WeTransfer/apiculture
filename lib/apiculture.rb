@@ -26,10 +26,6 @@ module Apiculture
     param.matchable === value or raise ParameterTypeMismatch.new(param, value.class)
   }
   
-  AC_PERMIT_PROC = ->(maybe_strong_params, param_name) {
-    maybe_strong_params.permit(param_name) if maybe_strong_params.respond_to?(:permit)
-  }
-  
   class Parameter < Struct.new(:name, :description, :required, :matchable, :cast_proc_or_method)
     # Return Strings since Sinatra prefers string keys for params{}
     def name_as_string; name.to_s; end
@@ -154,7 +150,7 @@ module Apiculture
   end
   
   # Returns a Proc that calls the strong parameters to check the presence/types
-  def parametric_validator_proc_from(parametric_validators)
+  def parametric_validator_proc_from(parametric_validators, implicitly_defined_route_parameter_names)
     required_params = parametric_validators.select{|e| e.required }
     # Return a lambda that will be called with the Sinatra params
     parametric_validation_blk = ->{
@@ -171,14 +167,16 @@ module Apiculture
         
         # Ensure the typecast value adheres to the enforced Ruby type
         AC_CHECK_TYPE_PROC.call(param, params[param_name])
-        # ..permit it in the strong parameters if we support them
-        AC_PERMIT_PROC.call(params, param_name)
       end
       
       # The following only applies if the app does not use strong_parameters - 
       # this makes use of parameter mutability again to kill the parameters that are not permitted
-      # or mentioned in the API specification
-      unexpected_parameters = params.keys.map(&:to_s) - parametric_validators.map(&:name).map(&:to_s)
+      # or mentioned in the API specification. We need to keep the params which are specified in the
+      # route but not documented via Apiculture though
+      unexpected_parameters = Set.new(params.keys.map(&:to_s)) -
+        Set.new(parametric_validators.map(&:name).map(&:to_s)) -
+        Set.new(implicitly_defined_route_parameter_names.map(&:to_s))
+      
       unexpected_parameters.each do | parameter_to_discard |
         # TODO: raise or record a warning
         if env['rack.logger'].respond_to?(:warn)
@@ -243,23 +241,30 @@ module Apiculture
     
     # Pick out all the defined parameters and set up a block that can validate them
     # when the action is called. With that, set up the actual Sinatra method that will
-    # respond to the request.
-    parametric_checker_proc = parametric_validator_proc_from(action_def.parameters + action_def.route_parameters)
+    # respond to the request. We take care to preserve all the params that have NOT been documented
+    # using Apiculture but _were_ in fact specified in the actual path.
+    route_parameter_names = path.scan(/:([^:\/]+)/).flatten.map(&:to_sym)
+    parametric_checker_proc = parametric_validator_proc_from(action_def.parameters + action_def.route_parameters, route_parameter_names)
     public_send(http_verb, path, options) do |*matched_sinatra_route_params|
-      route_params = []
-      action_def.route_parameters.each_with_index do |route_param, index|
+      # Extract all the parameter names from the route path as given to the method
+      route_parameters = Hash[route_parameter_names.zip(matched_sinatra_route_params)]
+
+      # Apply route parameter checks, but only to params that were defined in the Apiculture action descriptor.
+      # All the other params have to go via bypass.
+      checked_route_parameters = action_def.route_parameters.select {|par| route_parameter_names.include?(par.name) }
+      checked_route_parameters.each do |route_param|
         # Apply the type cast and save it (since using our override we can mutate the params)
-        value_after_type_cast = AC_APPLY_TYPECAST_PROC.call(route_param.cast_proc_or_method, params[route_param.name])
-        route_params[index] = value_after_type_cast
-        
+        value_from_route_params = route_parameters.fetch(route_param.name)
+        value_after_type_cast = AC_APPLY_TYPECAST_PROC.call(route_param.cast_proc_or_method, value_from_route_params)
         # Ensure the typecast value adheres to the enforced Ruby type
-        AC_CHECK_TYPE_PROC.call(route_param, route_params[index])
-        # ..permit it in the strong parameters if we support them
-        AC_PERMIT_PROC.call(route_params, route_param.name)
+        AC_CHECK_TYPE_PROC.call(route_param, value_after_type_cast)
+        # ..and overwrite it in the route parameters hash
+        route_parameters[route_param.name] = value_after_type_cast
       end
+      # Execute parametric checks on all the OTHER params (forms etc.)
       instance_exec(&parametric_checker_proc)
       # Execute the original action via instance_exec, passing along the route args
-      instance_exec(*route_params, &blk)
+      instance_exec(*route_parameters.values, &blk)
     end
     
     # Reset for the subsequent action definition

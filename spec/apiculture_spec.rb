@@ -191,7 +191,33 @@ describe "Apiculture" do
       post '/thing', {evil_ssh_injection: 'I am Homakov!'}
       expect(last_response).to be_ok
     end
-    
+
+    it 'allows route parameters that are not mentioned in the action definition, but are given in Sinatra path' do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+
+        api_method :post, '/api-thing/:id_of_thing' do |id|
+          raise 'id_of_thing must be passed' unless id == '123456'
+          raise "id_of_thing must be present in params, but they were #{params.inspect}" unless params.keys.include?('id_of_thing')
+          'All is well'
+        end
+
+        post '/vanilla-thing/:id_of_thing' do |id|
+          raise 'id_of_thing must be passed' unless id == '123456'
+          raise "id_of_thing must be present in params, but they were #{params.inspect}" unless params.keys.include?('id_of_thing')
+          'All is well'
+        end
+      end
+      
+      post '/vanilla-thing/123456'
+      expect(last_response).to be_ok
+
+      post '/api-thing/123456'
+      expect(last_response).to be_ok
+    end
+
     it 'raises when describing a route parameter that is not included in the path' do
       expect {
         Class.new(Sinatra::Base) do
