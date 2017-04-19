@@ -313,7 +313,7 @@ describe "Apiculture" do
     end
 
 
-    it 'cast block arguments to the right type', run: true do
+    it 'cast block arguments to the right type' do
       @app_class = Class.new(Sinatra::Base) do
         settings.show_exceptions = false
         settings.raise_errors = true
@@ -367,6 +367,24 @@ describe "Apiculture" do
       post '/occurrence', {when: '2015-07-05T22:16:18Z'}
       expect(last_response.body).to eq('Total success')
     end
+
+    it 'captures route parameters when using regex url' do
+      @app_class = Class.new(Sinatra::Base) do
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        extend Apiculture
+    
+        route_param :id, 'Id of the thing'
+
+        api_method :get, /^\/occurrence\/(?<id>\w+)$/ do |id|
+          raise "Not parsed" unless params[:id] == 'yoloswag'
+          raise "Not parsed" unless id == 'yoloswag'
+          'Total success'
+        end
+      end
+      get '/occurrence/yoloswag'
+      expect(last_response.body).to eq('Total success')
+    end
   end
   
   context 'Sinatra instance method extensions' do
@@ -386,7 +404,7 @@ describe "Apiculture" do
       parsed_body = JSON.load(last_response.body)
       expect(parsed_body['foo']).to eq('bar')
     end
-    it 'adds support for json_response to set http status code', run: true do
+    it 'adds support for json_response to set http status code' do
       @app_class = Class.new(Sinatra::Base) do
         extend Apiculture
         settings.show_exceptions = false
