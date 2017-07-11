@@ -28,11 +28,11 @@ module Apiculture::SinatraInstanceMethods
   # given in the keyword arguments
   def action_result(action_class, **action_ivars)
     call_result = action_class.new(self, **action_ivars).perform
-  
-    unless call_result.is_a?(Array) || call_result.is_a?(Hash)
-      raise "Action result should be an Array or a Hash, but was a #{call_result.class}"
+
+    unless call_result.is_a?(Array) || call_result.is_a?(Hash) || (call_result.nil? && status == 204)
+      raise "Action result should be an Array, a Hash or it can be nil but only if status is 204, instead it was a #{call_result.class}"
     end
   
-    json_response call_result
+    json_response call_result if call_result
   end
 end

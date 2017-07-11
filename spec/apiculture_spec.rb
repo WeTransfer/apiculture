@@ -386,6 +386,7 @@ describe "Apiculture" do
       parsed_body = JSON.load(last_response.body)
       expect(parsed_body['foo']).to eq('bar')
     end
+
     it 'adds support for json_response to set http status code', run: true do
       @app_class = Class.new(Sinatra::Base) do
         extend Apiculture
@@ -399,6 +400,7 @@ describe "Apiculture" do
       post '/some-json'
       expect(last_response.status).to eq(201)
     end
+
     it 'adds support for json_halt' do
       @app_class = Class.new(Sinatra::Base) do
         extend Apiculture
@@ -429,6 +431,45 @@ describe "Apiculture" do
       expect(last_response['Content-Type']).to include('application/json')
       parsed_body = JSON.load(last_response.body)
       expect(parsed_body).to eq({"error"=>"Nein.", "teapot"=>true})
+    end
+
+    # Mocks didn't play well with setting the status in a sinatra action
+    class NilTestAction < Apiculture::Action
+      def perform
+        status 204
+        nil
+      end
+    end
+    it 'allows returning an empty body when the status is 204' do
+      @app_class = Class.new(Sinatra::Base) do
+        extend Apiculture
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        api_method :get, '/nil204' do
+          action_result NilTestAction
+        end
+      end
+
+      get '/nil204'
+      expect(last_response.status).to eq(204)
+      expect(last_response.body).to be_empty
+    end
+
+    it "does not allow returning an empty body when the status isn't 204" do
+      # Mock out the perform call so that status doesn't change from the default of 200
+      expect_any_instance_of(NilTestAction).to receive(:perform).with(any_args).and_return(nil)
+      @app_class = Class.new(Sinatra::Base) do
+        extend Apiculture
+        settings.show_exceptions = false
+        settings.raise_errors = true
+        api_method :get, '/nil200' do
+          action_result NilTestAction
+        end
+      end
+
+      expect{
+        get '/nil200'
+      }.to raise_error(RuntimeError)
     end
   end
 end
