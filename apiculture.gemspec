@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'github-markup', '~> 1'
   s.add_runtime_dependency "mustache", '~> 1'
 
-  s.add_development_dependency 'rack-test', '~> 0.6'
+  s.add_development_dependency 'rack-test'
   s.add_development_dependency "rspec", "~> 3.1", '< 3.2'
   s.add_development_dependency "rdoc", "~> 3.12"
   s.add_development_dependency "rake", "~> 10"
