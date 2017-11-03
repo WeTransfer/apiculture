@@ -23,9 +23,7 @@ Gem::Specification.new do |s|
       'public gem pushes.'
   end
   
-  s.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
+  s.files = `git ls-files -z`.split("\x0")
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
