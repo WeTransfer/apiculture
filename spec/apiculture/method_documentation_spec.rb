@@ -68,7 +68,7 @@ describe Apiculture::MethodDocumentation do
     
     definition.description = "This adds a topping to a pancake"
     
-    definition.route_parameters << Apiculture::RouteParameter.new(:topping_id, 'ID of the pancake topping', Fixnum, cast: :to_i)
+    definition.route_parameters << Apiculture::RouteParameter.new(:topping_id, 'ID of the pancake topping', Integer, cast: :to_i)
     definition.http_verb = 'get'
     definition.path = '/pancake/:topping_id'
     

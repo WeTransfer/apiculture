@@ -319,9 +319,9 @@ describe "Apiculture" do
         settings.raise_errors = true
         extend Apiculture
       
-        route_param :number, "Number of the thing", Fixnum, :cast => :to_i
+        route_param :number, "Number of the thing", Integer, :cast => :to_i
         api_method :post, '/thing/:number' do |number|
-          raise "Not cast" unless number.class == Fixnum
+          raise "Not cast" unless number.class == Integer
           'Total success'
         end
       end
@@ -337,7 +337,7 @@ describe "Apiculture" do
         extend Apiculture
       
         param :number, "Number of the thing", Integer, :cast => :to_i
-        route_param :id, "Id of the thingy", Fixnum, :cast => :to_i
+        route_param :id, "Id of the thingy", Integer, :cast => :to_i
         route_param :awesome, "Hash of the thingy"
 
         api_method :post, '/thing/:id/:awesome' do |id|
