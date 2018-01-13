@@ -321,7 +321,7 @@ describe "Apiculture" do
       
         route_param :number, "Number of the thing", Integer, :cast => :to_i
         api_method :post, '/thing/:number' do |number|
-          raise "Not cast" unless number.class == Integer
+          raise "Not cast" unless number.class == Integer || Fixnum # Fixnums were collapsed into Integers in 2.4
           'Total success'
         end
       end
