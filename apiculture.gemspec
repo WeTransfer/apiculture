@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
   s.rubygems_version = "2.4.5.1"
   s.summary = "Sweet API sauce on top of Sintra"
 
-  s.add_runtime_dependency 'sinatra', '~> 1'
   s.add_runtime_dependency 'builder', '~> 3'
   s.add_runtime_dependency 'rdiscount', '~> 2'
   s.add_runtime_dependency 'github-markup', '~> 2'

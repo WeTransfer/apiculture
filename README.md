@@ -18,7 +18,7 @@ A simple API definition DSL with simple premises:
 ## A taste of honey
 
 ```ruby
-class Api::V2 < Sinatra::Base
+class Api::V2 < Apiculture::App
   
   use Rack::Parser, :content_types => {
     'application/json'  => JSON.method(:load).to_proc
