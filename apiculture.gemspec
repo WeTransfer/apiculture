@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.authors = ["Julik Tarkhanov", "WeTransfer"]
   s.homepage       = 'http://github.com/wetransfer/zip_tricks'
-  s.description = "A toolkit for building REST APIs on top of Sinatra"
+  s.description = "A toolkit for building REST APIs on top of Rack"
   s.email = "me@julik.nl"
 
   # Prevent pushing this gem to RubyGems.org.
@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rdiscount', '~> 2'
   s.add_runtime_dependency 'github-markup', '~> 2'
   s.add_runtime_dependency "mustache", '~> 1'
+  s.add_runtime_dependency "rutter", '~> 0.1'
 
   s.add_development_dependency 'rack-test'
   s.add_development_dependency "rspec", "~> 3.1", '< 3.2'
