@@ -1,3 +1,5 @@
+require'mustermann'
+
 class Apiculture::App
 
   class << self
@@ -16,7 +18,6 @@ class Apiculture::App
 
     def post(url, **options, &handler_blk)
       define_action :post, url, options, &handler_blk
-
     end
 
     def put(url, **options, &handler_blk)
@@ -27,25 +28,41 @@ class Apiculture::App
       define_action :delete, url, options, &handler_blk
     end
 
+    def actions
+      @actions || []
+    end
+
     def define_action(http_method, url_path, **options, &handler_blk)
       @actions ||= []
-      @actions << [http_method, url_path, options, handler_blk]
+      @actions << [http_method.to_s.upcase, url_path, options, handler_blk]
     end
+  end
+
+  def perform_action_with_handler_block(env, route_params, action_handler_callable)
+    env['apiculture.route_params'] = route_params
+    Apiculture::OlBlueEyes.new(action_handler_callable).call(env)
   end
 
   def call_without_middleware(env)
     # First try to route via actions...
-    path = env['PATH_INFO'].to_s
-    path = '/' + path unless path.start_with?('/')
+    given_http_method = env.fetch('REQUEST_METHOD')
+    given_path = env.fetch('PATH_INFO')
+    given_path = '/' + given_path unless given_path.start_with?('/')
+
+    action_list = self.class.actions
+    # TODO: I believe Sinatra matches bottom-up, not top-down.
+    action_list.each do | (action_http_method, action_url_path, action_options, action_handler_callable)|
+      route_pattern = Mustermann.new(action_url_path)
+      if given_http_method == action_http_method && route_params = route_pattern.params(given_path)
+        return perform_action_with_handler_block(env, route_params, action_handler_callable)
+      end
+    end
 
     # and if nothing works out - respond with a 404
     out = JSON.pretty_generate({
-      error: 'No matching action found for path %s' % env['PATH_INFO'],
+      error: 'No matching action found for %s %s' % [given_http_method, given_path],
     })
     [404, {'Content-Type' => 'application/json', 'Content-Length' => out.bytesize.to_s}, [out]]
-  end
-
-  def self.transform_params(env)
   end
 
   def self.call(env)

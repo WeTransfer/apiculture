@@ -2,6 +2,7 @@
 module Apiculture
   require_relative 'apiculture/version'
   require_relative 'apiculture/app'
+  require_relative 'apiculture/ol_blue_eyes'
   require_relative 'apiculture/action'
   require_relative 'apiculture/sinatra_instance_methods'
   require_relative 'apiculture/action_definition'
