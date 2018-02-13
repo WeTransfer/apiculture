@@ -34,6 +34,15 @@ class Apiculture::App
   end
 
   def call_without_middleware(env)
+    # First try to route via actions...
+    path = env['PATH_INFO'].to_s
+    path = '/' + path unless path.start_with?('/')
+
+    # and if nothing works out - respond with a 404
+    out = JSON.pretty_generate({
+      error: 'No matching action found for path %s' % env['PATH_INFO'],
+    })
+    [404, {'Content-Type' => 'application/json', 'Content-Length' => out.bytesize.to_s}, [out]]
   end
 
   def self.transform_params(env)
