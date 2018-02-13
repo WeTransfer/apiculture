@@ -5,7 +5,6 @@ require 'rspec'
 require 'apiculture'
 require 'rack'
 require 'rack/test'
-require 'sinatra/base'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
