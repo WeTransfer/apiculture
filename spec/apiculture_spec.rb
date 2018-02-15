@@ -321,11 +321,16 @@ describe "Apiculture" do
       
         route_param :number, "Number of the thing", Integer, :cast => :to_i
         api_method :post, '/thing/:number' do |number|
-          raise "Not cast" unless number.class == Integer
+          raise "Not cast" unless number.is_a?(Integer)
           'Total success'
         end
       end
       post '/thing/123'
+      expect(last_response.body).to eq('Total success')
+    
+      # Double checking that bignums are okay, too
+      bignum = 10**30
+      post "/thing/#{bignum}"
       expect(last_response.body).to eq('Total success')
     end
 

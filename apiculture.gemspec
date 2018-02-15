@@ -36,12 +36,12 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sinatra', '~> 1'
   s.add_runtime_dependency 'builder', '~> 3'
   s.add_runtime_dependency 'rdiscount', '~> 2'
-  s.add_runtime_dependency 'github-markup', '1.6.2'
+  s.add_runtime_dependency 'github-markup', '~> 2'
   s.add_runtime_dependency "mustache", '~> 1'
 
   s.add_development_dependency 'rack-test'
   s.add_development_dependency "rspec", "~> 3.1", '< 3.2'
-  s.add_development_dependency "rdoc", "~> 3.12"
+  s.add_development_dependency "rdoc", "~> 6.0"
   s.add_development_dependency "rake", "~> 10"
   s.add_development_dependency "bundler", "~> 1.0"
   s.add_development_dependency "simplecov", ">= 0"
