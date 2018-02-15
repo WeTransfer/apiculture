@@ -51,7 +51,7 @@ class Apiculture::App
 
     action_list = self.class.actions
     # TODO: I believe Sinatra matches bottom-up, not top-down.
-    action_list.each do | (action_http_method, action_url_path, action_options, action_handler_callable)|
+    action_list.reverse.each do | (action_http_method, action_url_path, action_options, action_handler_callable)|
       route_pattern = Mustermann.new(action_url_path)
       if given_http_method == action_http_method && route_params = route_pattern.params(given_path)
         return perform_action_with_handler_block(env, route_params, action_handler_callable)
