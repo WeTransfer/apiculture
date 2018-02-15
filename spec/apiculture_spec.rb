@@ -14,7 +14,7 @@ describe "Apiculture" do
         extend Apiculture
       
         post '/things/*' do
-          return params.inspect
+          params.inspect
         end
       end
       
