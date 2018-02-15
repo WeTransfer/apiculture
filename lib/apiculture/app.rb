@@ -44,6 +44,8 @@ class Apiculture::App
   end
 
   def call_without_middleware(env)
+    @env = env
+
     # First try to route via actions...
     given_http_method = env.fetch('REQUEST_METHOD')
     given_path = env.fetch('PATH_INFO')
@@ -54,7 +56,9 @@ class Apiculture::App
     action_list.reverse.each do | (action_http_method, action_url_path, action_options, action_handler_callable)|
       route_pattern = Mustermann.new(action_url_path)
       if given_http_method == action_http_method && route_params = route_pattern.params(given_path)
-        return perform_action_with_handler_block(env, route_params, action_handler_callable)
+        @request = Rack::Request.new(env)
+        @route_params = route_params
+        return perform_action_block(&action_handler_callable)
       end
     end
 
@@ -75,4 +79,56 @@ class Apiculture::App
     end.to_app.call(env)
   end
 
+  attr_reader :request
+  attr_reader :env
+
+  def initialize
+    @status = 200
+    @content_type = 'text/plain'
+  end
+
+  def content_type(new_type)
+    @content_type = Rack::Mime.mime_type('.%s' % new_type)
+  end
+
+  def route_params
+    @env['apiculture.route_params']
+  end
+
+  def params
+    # We let the route params take precedence
+    @request.params.merge(@route_params)
+  end
+
+  def status(status_code)
+    @status = status_code.to_i
+  end
+
+  def halt(rack_status, rack_headers, rack_body)
+    
+  end
+
+  def perform_action_block(&blk)
+    # Execut the action in a Sinatra-like fashion - passing the route parameter values as
+    # arguments to the given block/callable. This is where in the future we should ditch
+    # the Sinatra calling conventions - Sinatra mandates that the action accept the route parameters
+    # as arguments and grab all the useful stuff from instance methods like `params` etc. whereas
+    # we probably want to have just Rack apps mounted per route (under an action)
+    body_string_or_rack_triplet = instance_exec(*@route_params.values, &blk)
+
+    if rack_triplet?(body_string_or_rack_triplet)
+      return body_string_or_rack_triplet
+    end
+
+    [@status, {'Content-Type' => @content_type}, [body_string_or_rack_triplet]]
+  end
+
+  def rack_triplet?(maybe_triplet)
+    maybe_triplet.is_a?(Array) &&
+    maybe_triplet.length == 3 &&
+    maybe_triplet[0].is_a?(Integer) &&
+    maybe_triplet[1].is_a?(Hash) &&
+    maybe_triplet[1].keys.all? {|k| k.is_a?(String) } &&
+    maybe_triplet[2].respond_to?(:each)
+  end
 end
