@@ -61,7 +61,6 @@ class Apiculture::App
 
         match = route_pattern.match(given_path)
         @route_params['captures'] = match.captures unless match.nil?
-        binding.pry
         return perform_action_block(&action_handler_callable)
       end
     end
