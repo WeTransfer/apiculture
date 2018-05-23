@@ -84,10 +84,12 @@ class Apiculture::App
 
   attr_reader :request
   attr_reader :env
+  attr_reader :params
 
   def initialize
     @status = 200
     @content_type = 'text/plain'
+    @params = Apiculture::IndifferentHash.new
   end
 
   def content_type(new_type)
@@ -98,17 +100,12 @@ class Apiculture::App
     @env['apiculture.route_params']
   end
 
-  def params
-    # We let the route params take precedence
-    Apiculture::IndifferentHash.new.merge(@request.params.merge(@route_params))
-  end
-
   def status(status_code)
     @status = status_code.to_i
   end
 
   def halt(rack_status, rack_headers, rack_body)
-    
+    throw :halt, [rack_status, rack_headers, rack_body]
   end
 
   def perform_action_block(&blk)
@@ -117,13 +114,16 @@ class Apiculture::App
     # the Sinatra calling conventions - Sinatra mandates that the action accept the route parameters
     # as arguments and grab all the useful stuff from instance methods like `params` etc. whereas
     # we probably want to have just Rack apps mounted per route (under an action)
-    body_string_or_rack_triplet = instance_exec(*@route_params.values, &blk)
+    catch(:halt) do
 
-    if rack_triplet?(body_string_or_rack_triplet)
-      return body_string_or_rack_triplet
+      body_string_or_rack_triplet = instance_exec(*@route_params.values, &blk)
+
+      if rack_triplet?(body_string_or_rack_triplet)
+        return body_string_or_rack_triplet
+      end
+
+     res = [@status, {'Content-Type' => @content_type}, [body_string_or_rack_triplet]]
     end
-
-    [@status, {'Content-Type' => @content_type}, [body_string_or_rack_triplet]]
   end
 
   def rack_triplet?(maybe_triplet)
