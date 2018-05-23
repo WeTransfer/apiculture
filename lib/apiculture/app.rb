@@ -101,7 +101,7 @@ class Apiculture::App
 
   def params
     # We let the route params take precedence
-    @request.params.merge(@route_params)
+    Apiculture::IndifferentHash.new.merge(@request.params.merge(@route_params))
   end
 
   def status(status_code)
