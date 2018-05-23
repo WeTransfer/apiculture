@@ -57,10 +57,12 @@ class Apiculture::App
       route_pattern = Mustermann.new(action_url_path)
       if given_http_method == action_http_method && route_params = route_pattern.params(given_path)
         @request = Rack::Request.new(env)
+        @params.merge!(@request.params)
         @route_params = route_params
 
         match = route_pattern.match(given_path)
         @route_params['captures'] = match.captures unless match.nil?
+        @params.merge!(@route_params)
         return perform_action_block(&action_handler_callable)
       end
     end
