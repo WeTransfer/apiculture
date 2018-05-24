@@ -1,5 +1,5 @@
 source "http://rubygems.org"
-gem 'rack', "~> 2"
+gem 'rack', "~> 1"
 
 group :development do
   gem 'rack-test'
