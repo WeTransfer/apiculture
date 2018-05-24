@@ -38,11 +38,6 @@ class Apiculture::App
     end
   end
 
-  def perform_action_with_handler_block(env, route_params, action_handler_callable)
-    env['apiculture.route_params'] = route_params
-    Apiculture::OlBlueEyes.new(action_handler_callable).call(env)
-  end
-
   def call_without_middleware(env)
     @env = env
 
@@ -96,10 +91,6 @@ class Apiculture::App
 
   def content_type(new_type)
     @content_type = Rack::Mime.mime_type('.%s' % new_type)
-  end
-
-  def route_params
-    @env['apiculture.route_params']
   end
 
   def status(status_code)
