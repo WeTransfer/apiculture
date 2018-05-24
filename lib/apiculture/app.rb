@@ -116,16 +116,17 @@ class Apiculture::App
     # the Sinatra calling conventions - Sinatra mandates that the action accept the route parameters
     # as arguments and grab all the useful stuff from instance methods like `params` etc. whereas
     # we probably want to have just Rack apps mounted per route (under an action)
-    catch(:halt) do
-
+    response = catch(:halt) do
       body_string_or_rack_triplet = instance_exec(*@route_params.values, &blk)
 
       if rack_triplet?(body_string_or_rack_triplet)
         return body_string_or_rack_triplet
       end
 
-     res = [@status, {'Content-Type' => @content_type}, [body_string_or_rack_triplet]]
+     [@status, {'Content-Type' => @content_type}, [body_string_or_rack_triplet]]
     end
+
+    return response
   end
 
   def rack_triplet?(maybe_triplet)
