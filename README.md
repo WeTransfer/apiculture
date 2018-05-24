@@ -1,31 +1,31 @@
 # apiculture
 
-A little toolkit for building RESTful API backends on top of Sinatra.
+A little toolkit for building RESTful API backends on top of Rack.
 
 [![Build Status](https://travis-ci.org/WeTransfer/apiculture.svg?branch=master)](https://travis-ci.org/WeTransfer/apiculture)
 
 ## Ideas
 
 A simple API definition DSL with simple premises:
-  
+
  * Endpoint URLs should be _visible_ in the actual code. The reason for that is with nested
    blocks you inevitably end up setting up context somewhere far away from the terminal route
    that ends up using that context.
  * Explicit allowed/required parameters (both payload/query string and body)
  * Explicit description in front of the API action definition
  * Wrap the actual work into Actions, so that the API definition is mostly routes
- 
+
 ## A taste of honey
 
 ```ruby
 class Api::V2 < Apiculture::App
-  
+
   use Rack::Parser, :content_types => {
     'application/json'  => JSON.method(:load).to_proc
   }
-  
+
   extend Apiculture
-  
+
   desc 'Create a Contact'
   required_param :name, 'Name of the person', String
   param :email, 'Email address of the person', String
@@ -36,7 +36,7 @@ class Api::V2 < Apiculture::App
     # works exactly the same - but we suggest using Actions instead.
     action_result CreateContact # uses Api::V2::CreateContact
   end
-  
+
   desc 'Fetch a Contact'
   route_param :id, 'ID of the person'
   responds_with 200, 'Contact data', {name: 'John Appleseed', id: "ac19...fefg"}
@@ -75,7 +75,7 @@ If you want to also examine the HTML documentation that gets built during the te
 Note that this requires presence of the `open` commandline utility (should be available on both OSX and Linux).
 
 ## Contributing to apiculture
- 
+
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
 * Fork the project.
@@ -86,6 +86,5 @@ Note that this requires presence of the `open` commandline utility (should be av
 
 ## Copyright
 
-Copyright (c) 2015 WeTransfer. See LICENSE.txt for
+Copyright (c) 2015-2018 WeTransfer. See LICENSE.txt for
 further details.
-
