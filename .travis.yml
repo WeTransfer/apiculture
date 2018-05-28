@@ -1,10 +1,13 @@
+gemfile:
+  - gemfiles/Gemfile.rack-1.x
+  - gemfiles/Gemfile.rack-2.x
 rvm:
-- 2.1.5
-- 2.2.2
-- 2.3.3
-- 2.4.1
+- 2.3.7
+- 2.4.4
+- 2.5.1
+- 2.6.0-preview1
 sudo: false
 cache: bundler
 matrix:
   allow_failures:
-    - rvm: 2.1.5 # incompatible with the new jeweler version
+    - rvm: 2.6.0-preview1

@@ -21,15 +21,14 @@ module Apiculture::SinatraInstanceMethods
   def json_halt(with_error_message, status: 400, **attrs_for_json_response)
     # Pretty-print + newline to be terminal-friendly
     err_str = JSON.pretty_generate({error: with_error_message}.merge(attrs_for_json_response)) + NEWLINE
-    halt status, {'Content-Type' => 'application/json'}, [err_str] 
+    halt status, {'Content-Type' => 'application/json'}, [err_str]
   end
   
   # Handles the given action via the given class, passing it the instance variables
   # given in the keyword arguments
   def action_result(action_class, **action_ivars)
     call_result = action_class.new(self, **action_ivars).perform
-
-    unless call_result.is_a?(Array) || call_result.is_a?(Hash) || (call_result.nil? && status == 204)
+    unless call_result.is_a?(Array) || call_result.is_a?(Hash) || (call_result.nil? && @status == 204)
       raise "Action result should be an Array, a Hash or it can be nil but only if status is 204, instead it was a #{call_result.class}"
     end
   

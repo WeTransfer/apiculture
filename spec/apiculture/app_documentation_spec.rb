@@ -2,7 +2,7 @@ require_relative '../spec_helper'
 
 describe "Apiculture.api_documentation" do
   let(:app) {
-    Class.new(Sinatra::Base) do
+    Class.new(Apiculture::App) do
       extend Apiculture
       
       markdown_string 'This API is very important. Because it has to do with pancakes.'
@@ -71,7 +71,7 @@ describe "Apiculture.api_documentation" do
   end
   
   it 'generates app documentation honoring the mount point' do
-    overridden = Class.new(Sinatra::Base) do
+    overridden = Class.new(Apiculture::App) do
       extend Apiculture
       mounted_at '/api/v2/'
       api_method :get, '/pancakes' do
@@ -83,7 +83,7 @@ describe "Apiculture.api_documentation" do
   end
   
   it 'generates app documentation injecting the inline Markdown strings' do
-    app_class = Class.new(Sinatra::Base) do
+    app_class = Class.new(Apiculture::App) do
       extend Apiculture
       markdown_string '# This describes important stuff'
       api_method :get, '/pancakes' do
@@ -103,7 +103,7 @@ describe "Apiculture.api_documentation" do
     before(:each) { File.open('./TEST.md', 'w') {|f| f << "# This is an important header"} }
     after(:each) { File.unlink('./TEST.md') }
     it 'splices the contents of the file using markdown_file' do
-      app_class = Class.new(Sinatra::Base) do
+      app_class = Class.new(Apiculture::App) do
         extend Apiculture
         markdown_file './TEST.md'
         api_method :get, '/pancakes' do

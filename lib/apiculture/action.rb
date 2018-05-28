@@ -11,9 +11,9 @@
 class Apiculture::Action
   # Initialize a new BasicAction, with the given Sintra application and a hash
   # of keyword arguments that will be converted into instance variables.
-  def initialize(sinatra_app, **ivars)
+  def initialize(app_receiver, **ivars)
     ivars.each_pair {|k,v| instance_variable_set("@#{k}", v) }
-    @_sinatra_app = sinatra_app
+    @_sinatra_app = app_receiver
   end
   
   # Halt with a JSON error message (delegates to Sinatra's halt() under the hood)

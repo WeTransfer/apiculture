@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.authors = ["Julik Tarkhanov", "WeTransfer"]
   s.homepage       = 'http://github.com/wetransfer/zip_tricks'
-  s.description = "A toolkit for building REST APIs on top of Sinatra"
+  s.description = "A toolkit for building REST APIs on top of Rack"
   s.email = "me@julik.nl"
 
   # Prevent pushing this gem to RubyGems.org.
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
     raise 'RubyGems 2.0 or newer is required to protect against ' \
       'public gem pushes.'
   end
-  
+
   s.files = `git ls-files -z`.split("\x0")
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -31,13 +31,13 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/WeTransfer/apiculture"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.4.5.1"
-  s.summary = "Sweet API sauce on top of Sintra"
+  s.summary = "Sweet API sauce on top of Rack"
 
-  s.add_runtime_dependency 'sinatra', '~> 1'
+  s.add_runtime_dependency 'mustermann', '~> 1'
   s.add_runtime_dependency 'builder', '~> 3'
   s.add_runtime_dependency 'rdiscount', '~> 2'
-  s.add_runtime_dependency 'github-markup', '~> 2'
-  s.add_runtime_dependency "mustache", '~> 1'
+  s.add_runtime_dependency 'github-markup', '~> 1'
+  s.add_runtime_dependency 'mustache', '~> 1'
 
   s.add_development_dependency 'rack-test'
   s.add_development_dependency "rspec", "~> 3.1", '< 3.2'
