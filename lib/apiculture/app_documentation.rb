@@ -51,4 +51,8 @@ class Apiculture::AppDocumentation
     template = File.read(__dir__ + '/app_documentation_tpl.mustache')
     Mustache.render(template, :html_fragment => to_html_fragment)
   end
+
+  def to_openapi
+    OpenApiDocumentation::Base.new(@app_title, @chunks)
+  end
 end
