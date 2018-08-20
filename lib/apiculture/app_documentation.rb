@@ -13,7 +13,7 @@ class Apiculture::AppDocumentation
   
   # Generates a Markdown string that contains the entire API documentation
   def to_markdown
-    (['## %s' % @app_title] + to_markdown_slices).join(JOINER)
+    (['## %s' % @app_title] + to_tagged_markdowns).join(JOINER)
   end
 
   # Generates a complete HTML document string that can be saved into a file
@@ -25,12 +25,14 @@ class Apiculture::AppDocumentation
   
   # Generates an HTML fragment string that can be included into another HTML document
   def to_html_fragment
-    to_markdown_slices.map(&:to_html).join(JOINER)
+    to_tagged_markdowns.map(&:to_html).join(JOINER)
   end
+
+  private
   
-  def to_markdown_slices
-    @chunks.map do |action_def_or_doc|
-      action_def_or_doc.to_markdown_slice(@mountpoint)
+    def to_tagged_markdowns
+      @chunks.map do |action_def_or_doc|
+        action_def_or_doc.to_tagged_markdown(@mountpoint)
+      end
     end
-  end
 end

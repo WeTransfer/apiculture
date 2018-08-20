@@ -4,7 +4,7 @@ class Apiculture::MarkdownSegment < Struct.new(:string)
     string.to_s
   end
 
-  def to_markdown_slice(_mountpoint)
+  def to_tagged_markdown(_mountpoint)
     TaggedMarkdown.new(self, 'apiculture-verbatim')
   end
 end
