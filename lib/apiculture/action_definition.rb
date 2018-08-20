@@ -27,4 +27,9 @@ class Apiculture::ActionDefinition
   def initialize
     @parameters, @route_parameters, @responses = [], [], []
   end
+
+  def to_markdown_slice(mountpoint = nil)
+    md = Apiculture::MethodDocumentation.new(self, mountpoint).to_markdown
+    TaggedMarkdown.new(md, 'apiculture-method')
+  end
 end
