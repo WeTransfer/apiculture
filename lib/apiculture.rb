@@ -203,7 +203,7 @@ module Apiculture
   #   MyApi.api_documentation.to_html #=> "..."
   def api_documentation
     require_relative 'apiculture/app_documentation'
-    AppDocumentation.new(self, @apiculture_mounted_at.to_s, @apiculture_actions_and_docs || [])
+    AppDocumentation.new(self, @apiculture_mounted_at.to_s, apiculture_stack)
   end
   
   # Define an API method. Under the hood will call the related methods in Sinatra
@@ -277,6 +277,5 @@ module Apiculture
   
   def apiculture_stack
     @apiculture_actions_and_docs ||= []
-    @apiculture_actions_and_docs
   end
 end
