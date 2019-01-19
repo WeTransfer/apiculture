@@ -13,6 +13,8 @@ describe Apiculture::MethodDocumentation do
     definition.route_parameters << Apiculture::RouteParameter.new(:pan_id, 'ID of the pancake frying pan')
     definition.http_verb = 'get'
     definition.path = '/pancake/:pan_id/bake'
+    definition.responses << Apiculture::PossibleResponse.new(200, "Pancake has been baked", {diameter: 10, unit: "cm"})
+    definition.responses << Apiculture::PossibleResponse.new(417, "Frying pan too cold", "ERR_NO_HEAT")
     
     documenter = described_class.new(definition)
     
@@ -27,6 +29,8 @@ describe Apiculture::MethodDocumentation do
     expect(generated_html).to include('ID of the pancake frying pan')
     expect(generated_html).to include('<h3>Request parameters</h3>')
     expect(generated_html).to include('<td>Pancake name</td>')
+    expect(generated_html).to include('<td>Pancake has been baked</td>')
+    expect(generated_html).to include('<td>Frying pan too cold</td>')
   end
   
   it 'generates HTML from an ActionDefinition without route params' do

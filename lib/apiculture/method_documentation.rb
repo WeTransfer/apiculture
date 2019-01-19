@@ -70,7 +70,13 @@ class Apiculture::MethodDocumentation
     if for_response_definition.no_body?
       '(empty)'
     else
-      JSON.pretty_generate(for_response_definition.jsonable_object_example)
+      begin
+        JSON.pretty_generate(for_response_definition.jsonable_object_example)
+      rescue JSON::GeneratorError
+        # pretty_generate refuses to generate scalars
+        # it wants objects or arrays. For bare JSON values .dump will do
+        JSON.dump(for_response_definition.jsonable_object_example)
+      end
     end
   end
 
