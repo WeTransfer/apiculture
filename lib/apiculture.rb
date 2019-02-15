@@ -8,6 +8,7 @@ module Apiculture
   require_relative 'apiculture/action_definition'
   require_relative 'apiculture/markdown_segment'
   require_relative 'apiculture/timestamp_promise'
+  require_relative 'apiculture/app_documentation'
   
   def self.extended(in_class)
     in_class.send(:include, SinatraInstanceMethods)
@@ -202,7 +203,6 @@ module Apiculture
   #   MyApi.api_documentation.to_markdown #=> "..."
   #   MyApi.api_documentation.to_html #=> "..."
   def api_documentation
-    require_relative 'apiculture/app_documentation'
     AppDocumentation.new(self, @apiculture_mounted_at.to_s, @apiculture_actions_and_docs || [])
   end
   
