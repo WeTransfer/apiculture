@@ -7,7 +7,7 @@ describe Apiculture::MethodDocumentation do
     
     definition.description = "This action bakes pancakes"
     definition.parameters << Apiculture::Parameter.new(:name, 'Pancake name', true, String, :to_s)
-    definition.parameters << Apiculture::Parameter.new(:thickness, 'Pancake thickness', false, Float, :to_f)
+    definition.parameters << Apiculture::Parameter.new(:thickness, 'Pancake **thick**ness', false, Float, :to_f)
     definition.parameters << Apiculture::Parameter.new(:diameter, 'Pancake diameter', false, Integer, :to_i)
     
     definition.route_parameters << Apiculture::RouteParameter.new(:pan_id, 'ID of the pancake frying pan')
@@ -28,9 +28,9 @@ describe Apiculture::MethodDocumentation do
     expect(generated_html).to include('<h3>URL parameters</h3>')
     expect(generated_html).to include('ID of the pancake frying pan')
     expect(generated_html).to include('<h3>Request parameters</h3>')
-    expect(generated_html).to include('<td>Pancake name</td>')
-    expect(generated_html).to include('<td>Pancake has been baked</td>')
-    expect(generated_html).to include('<td>Frying pan too cold</td>')
+    expect(generated_html).to include('<p>Pancake name</p>')
+    expect(generated_html).to include('<p>Pancake has been baked</p>')
+    expect(generated_html).to include('<p>Frying pan too cold</p>')
   end
   
   it 'generates HTML from an ActionDefinition without route params' do
@@ -38,7 +38,7 @@ describe Apiculture::MethodDocumentation do
     
     definition.description = "This action bakes pancakes"
     definition.parameters << Apiculture::Parameter.new(:name, 'Pancake name', true, String, :to_s)
-    definition.parameters << Apiculture::Parameter.new(:thickness, 'Pancake thickness', false, Float, :to_f)
+    definition.parameters << Apiculture::Parameter.new(:thickness, 'Pancake **thick**ness', false, Float, :to_f)
     definition.parameters << Apiculture::Parameter.new(:diameter, 'Pancake diameter', false, Integer, :to_i)
     
     definition.http_verb = 'get'

@@ -1,4 +1,6 @@
 require 'builder'
+require 'rdiscount'
+
 # Generates Markdown/HTML documentation about a single API action.
 #
 # Formats route parameters and request/QS parameters as a neat HTML
@@ -26,11 +28,14 @@ class Apiculture::MethodDocumentation
 
   # Compose an HTML string by converting the result of +to_markdown+
   def to_html_fragment
-    require 'rdiscount'
-    RDiscount.new(to_markdown).to_html
+    markdown_string_to_html(to_markdown)
   end
 
   private
+
+  def markdown_string_to_html(str)
+    RDiscount.new(str.to_s).to_html
+  end
 
   class StringBuf #:nodoc:
     def initialize; @blocks = []; end
@@ -59,7 +64,7 @@ class Apiculture::MethodDocumentation
       @definition.route_parameters.each do | param |
         html.tr do
           html.td { html.tt(':%s' % param.name) }
-          html.td(param.description)
+          html.td { html << markdown_string_to_html(param.description) }
         end
       end
     end
@@ -98,7 +103,7 @@ class Apiculture::MethodDocumentation
       @definition.responses.each do | resp |
         html.tr do
           html.td { html.b(resp.http_status_code) }
-          html.td resp.description
+          html.td { html << markdown_string_to_html(resp.description) }
           html.td { html.pre { html.code(body_example(resp)) }}
         end
       end
@@ -139,7 +144,7 @@ class Apiculture::MethodDocumentation
           html.td { html.tt(param.name.to_s) }
           html.td(param.required ? 'Yes' : 'No')
           html.td(param.matchable.inspect)
-          html.td(param.description.to_s)
+          html.td { html << markdown_string_to_html(param.description) }
         end
       end
     end
