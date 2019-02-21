@@ -10,9 +10,16 @@ describe "Apiculture.api_documentation" do
       documentation_build_time!
       
       desc 'Order a pancake'
-      required_param :diameter, "Diameter of the pancake", Integer
+      required_param :diameter, "Diameter of the pancake. The pancake will be **bold**", Integer
       param :topping, 'Type of topping', String
-      responds_with 200, 'When the pancake is created succesfully', {id: 'abdef..c21'}
+      pancake_response_info = <<~EOS
+        When the pancake has been baked succesfully
+        The pancake will have the following properties:
+        
+        * It is going to be round
+        * It is going to be delicious
+        EOS
+      responds_with 200, pancake_response_info, {id: 'abdef..c21'}
       api_method :post, '/pancakes' do
       end
       
@@ -58,7 +65,7 @@ describe "Apiculture.api_documentation" do
    
     expect(generated_html).to include('<body')
     expect(generated_html).to include('Pancake ID to check status on')
-    expect(generated_html).to include('When the pancake is created succesfully')
+    expect(generated_html).to include('When the pancake has been baked succesfully')
     expect(generated_html).to include('"id": "abdef..c21"')
   end
   
