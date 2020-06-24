@@ -82,6 +82,7 @@ describe "Apiculture" do
         route_param :id, "The ID of the thing"
         required_param :name, "Name of the thing", String
         api_method :post, '/thing/:id' do | thing_id |
+          puts caller
           $created_thing = {id: thing_id, name: params[:name]}
           'Wild success'
         end
