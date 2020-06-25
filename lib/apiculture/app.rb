@@ -102,7 +102,7 @@ class Apiculture::App
   end
 
   def perform_action_block(&blk)
-    # Execut the action in a Sinatra-like fashion - passing the route parameter values as
+    # Executes the action in a Sinatra-like fashion - passing the route parameter values as
     # arguments to the given block/callable. This is where in the future we should ditch
     # the Sinatra calling conventions - Sinatra mandates that the action accept the route parameters
     # as arguments and grab all the useful stuff from instance methods like `params` etc. whereas
