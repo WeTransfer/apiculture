@@ -248,7 +248,6 @@ module Apiculture
     route_parameter_names = path.scan(/:([^:\/]+)/).flatten.map(&:to_sym)
     parametric_checker_proc = parametric_validator_proc_from(action_def.parameters + action_def.route_parameters, route_parameter_names)
     public_send(http_verb, path, options) do |*matched_sinatra_route_params|
-      caller
       # Extract all the parameter names from the route path as given to the method
       route_parameters = Hash[route_parameter_names.zip(matched_sinatra_route_params)]
 
