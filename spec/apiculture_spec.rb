@@ -123,19 +123,48 @@ describe "Apiculture" do
       }.to raise_error('Missing parameter :name')
     end
 
-    it 'verifies the parameter type' do
+    it 'verifies the parameter type and allows addition of middleware' do
+      require 'rack/parser'
       @app_class = Class.new(Apiculture::App) do
         extend Apiculture
+        use Rack::Parser
 
         required_param :number, "Number of the thing", Integer
         api_method :post, '/thing' do
-          raise "Should never be called"
+          raise "Did end up in the action"
         end
       end
 
       expect {
-        post '/thing', {number: '123'}
+        post '/thing', JSON.dump({number: '123'}), {'CONTENT_TYPE' => 'application/json'}
       }.to raise_error('Received String, expected Integer for :number')
+
+      expect {
+        post '/thing', JSON.dump({number: 123}), {'CONTENT_TYPE' => 'application/json'}
+      }.to raise_error(/Did end up in the action/)
+    end
+
+    it 'allows addition of middleware' do
+      class Raiser < Struct.new(:app)
+        def call(env)
+          s, h, b = app.call(env)
+          h['X-Via'] = 'Raiser'
+          [s, h, b]
+        end
+      end
+
+      @app_class = Class.new(Apiculture::App) do
+        extend Apiculture
+        use Raiser
+
+        api_method :post, '/thing' do
+          'Everything is fine'
+        end
+      end
+
+      post '/thing'
+
+      raise last_response.headers.inspect
     end
 
     it 'supports an arbitrary object with === as a type specifier for a parameter' do

@@ -45,4 +45,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", ">= 12.3.3"
   s.add_development_dependency "bundler", "~> 1.0"
   s.add_development_dependency "simplecov", ">= 0"
+  s.add_development_dependency "rack-parser"
 end
