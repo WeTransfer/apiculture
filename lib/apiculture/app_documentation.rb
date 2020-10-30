@@ -25,6 +25,10 @@ class Apiculture::AppDocumentation
   # Generates a Markdown string that contains the entire API documentation
   def to_markdown
     (['## %s' % @app_title] + to_markdown_slices).join("\n\n")
+  end 
+
+  def to_openapi
+    OpenApiDocumentation::Base.new(@app_title, @mountpoint, @chunks)
   end
   
   # Generates an HTML fragment string that can be included into another HTML document
