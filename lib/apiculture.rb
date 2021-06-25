@@ -9,6 +9,7 @@ module Apiculture
   require_relative 'apiculture/markdown_segment'
   require_relative 'apiculture/timestamp_promise'
   require_relative 'apiculture/app_documentation'
+  require_relative 'apiculture/openapi_documentation'
   
   def self.extended(in_class)
     in_class.send(:include, SinatraInstanceMethods)
@@ -205,7 +206,7 @@ module Apiculture
   def api_documentation
     AppDocumentation.new(self, @apiculture_mounted_at.to_s, @apiculture_actions_and_docs || [])
   end
-  
+
   # Define an API method. Under the hood will call the related methods in Sinatra
   # to define the route.
   def api_method(http_verb, path, options={}, &blk)
