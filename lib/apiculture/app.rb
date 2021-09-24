@@ -3,9 +3,9 @@ require'mustermann'
 class Apiculture::App
 
   class << self
-    def use(middlreware_factory, middleware_options, &middleware_blk)
+    def use(middleware, *args, &block)
       @middleware_configurations ||= []
-      @middleware_configurations << [middleware_factory, middleware_options, middleware_blk]
+      @middleware_configurations << [middleware, args, block]
     end
 
     def middleware_configurations
@@ -35,6 +35,17 @@ class Apiculture::App
     def define_action(http_method, url_path, **options, &handler_blk)
       @actions ||= []
       @actions << [http_method.to_s.upcase, url_path, options, handler_blk]
+    end
+
+    def call(env)
+      app = new
+      middleware_configurations = @middleware_configurations || []
+      Rack::Builder.new do
+        middleware_configurations.each do |middleware, *args, &block|
+          use(middleware, *args, &block)
+        end
+        run ->(env) { app.call_without_middleware(env) }
+      end.to_app.call(env)
     end
   end
 
@@ -67,16 +78,6 @@ class Apiculture::App
       error: 'No matching action found for %s %s' % [given_http_method, given_path],
     })
     [404, {'Content-Type' => 'application/json', 'Content-Length' => out.bytesize.to_s}, [out]]
-  end
-
-  def self.call(env)
-    app = new
-    Rack::Builder.new do
-      (@middleware_configurations || []).each do |middleware_args|
-        use(*middleware_args)
-      end
-      run ->(env) { app.call_without_middleware(env) }
-    end.to_app.call(env)
   end
 
   attr_reader :request
