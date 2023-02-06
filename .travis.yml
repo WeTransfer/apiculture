@@ -1,11 +1,13 @@
 gemfile:
   - gemfiles/Gemfile.rack-1.x
   - gemfiles/Gemfile.rack-2.x
+  - gemfiles/Gemfile.rack-3.x
 rvm:
   - 2.3
   - 2.4
   - 2.5
   - 2.6
   - 2.7
+  - 3.0
 sudo: false
 cache: bundler

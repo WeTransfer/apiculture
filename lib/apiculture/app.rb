@@ -13,19 +13,19 @@ class Apiculture::App
     end
 
     def get(url, **options, &handler_blk)
-      define_action :get, url, options, &handler_blk
+      define_action :get, url, **options, &handler_blk
     end
 
     def post(url, **options, &handler_blk)
-      define_action :post, url, options, &handler_blk
+      define_action :post, url, **options, &handler_blk
     end
 
     def put(url, **options, &handler_blk)
-      define_action :put, url, options, &handler_blk
+      define_action :put, url, **options, &handler_blk
     end
 
     def delete(url, **options, &handler_blk)
-      define_action :delete, url, options, &handler_blk
+      define_action :delete, url, **options, &handler_blk
     end
 
     def actions

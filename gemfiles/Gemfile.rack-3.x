@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 gem 'rack', "~> 2"
 
-gem 'mustermann', '~> 1'
+gem 'mustermann', '~> 3'
 gem 'builder', '~> 3'
 gem 'rdiscount', '~> 2'
 gem 'github-markup', '~> 1'
