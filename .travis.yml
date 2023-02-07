@@ -26,6 +26,12 @@ jobs:
     gemfile: gemfiles/Gemfile.rack-2.x
   - rvm: 3.0
     gemfile: gemfiles/Gemfile.rack-3.x
+  - rvm: 3.2
+    gemfile: gemfiles/Gemfile.rack-1.x
+  - rvm: 3.2
+    gemfile: gemfiles/Gemfile.rack-2.x
+  - rvm: 3.2
+    gemfile: gemfiles/Gemfile.rack-3.x
 
 sudo: false
 cache: bundler
