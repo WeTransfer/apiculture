@@ -9,7 +9,7 @@ gem 'mustache', '~> 1'
 
 group :development do
   gem 'rack-test'
-  gem "rspec", "~> 3.1", '< 3.2'
+  gem "rspec", "~> 3"
   gem "rdoc", "~> 6.0"
   gem "rake", "~> 10"
   gem "bundler"
