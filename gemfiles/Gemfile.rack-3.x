@@ -11,6 +11,6 @@ group :development do
   gem 'rack-test'
   gem "rspec", "~> 3.1", '< 3.2'
   gem "rdoc", "~> 6.0"
-  gem "rake"
+  gem "rake", "~> 12"
   gem "bundler"
 end
