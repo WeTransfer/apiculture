@@ -17,7 +17,10 @@ describe 'Apiculture.api_documentation' do
         * It is going to be round
         * It is going to be delicious
       EOS
-      responds_with 200, pancake_response_info, { id: 'abdef..c21' }
+      responds_with 200, pancake_response_info, {
+        id: 'abdef..c21',
+        one: { two: [{ three: 'four' }], five: 6, seven: [8], nine: nil }
+      }
       api_method :post, '/pancakes' do
       end
 
@@ -112,6 +115,35 @@ describe 'Apiculture.api_documentation' do
             end
           end
         end
+
+        describe 'response body schema' do
+          let(:schema) { post_pancakes.dig(:responses, '200', :content, :'application/json', :schema) }
+
+          it 'will have the correct response body schema' do
+            expect(schema).to eq(
+              {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string', example: 'abdef..c21'
+                  },
+                  one: {
+                    two: {
+                      type: 'array', items: [{ three: { type: 'string', example: 'four' } }]
+                    },
+                    five: {
+                      type: 'integer', example: 6
+                    },
+                    seven: {
+                      type: 'array', items: [{ type: 'integer', example: 8 }]
+                    },
+                    nine: nil
+                  }
+                }
+              }
+            )
+          end
+        end
       end
 
       context 'GET /pancake/:id' do
@@ -180,7 +212,7 @@ describe 'Apiculture.api_documentation' do
 
             describe 'schema' do
               let(:schema) { response_200.dig(:content, :'application/json', :schema) }
-              
+
               it 'will have object type' do
                 expect(schema).to include(type: 'object')
               end
