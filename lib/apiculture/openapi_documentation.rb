@@ -8,9 +8,9 @@ module OpenApiDocumentation
       @paths = chunks.select { |chunk| chunk.respond_to?(:http_verb) }
       @data = {
         openapi: '3.0.0',
-        info: { 
-          title: @app.to_s, 
-          version: '0.0.1', 
+        info: {
+          title: @app.to_s,
+          version: '0.0.1',
           description: @app.to_s + " " + chunks.select { |chunk| chunk.respond_to?(:to_markdown) }.map(&:to_markdown).join("\n")
         },
         tags: []
@@ -27,7 +27,7 @@ module OpenApiDocumentation
     end
 
     def spec
-      @data      
+      @data
     end
 
     private
@@ -137,7 +137,7 @@ module OpenApiDocumentation
 
     def build_request_body
       return nil if VERBS_WITHOUT_BODY.include?(@path.http_verb)
-      
+
       body_params = Hash[ @path.parameters.collect do |parameter|
         [parameter.name, {
           type: Util.map_type(parameter.matchable),
@@ -171,7 +171,7 @@ module OpenApiDocumentation
         unless response.jsonable_object_example.nil? || response.jsonable_object_example.empty?
           _response[:content] = {
             'application/json': {
-                schema: 
+                schema:
                   { type: 'object',
                   properties: Util.response_to_schema(response.jsonable_object_example) }
             }
@@ -197,16 +197,40 @@ module OpenApiDocumentation
       TrueClass => true
     }.freeze
 
-    def self.response_to_schema(response)
-      schema = {}
-      return nil if response.nil? || response.empty? || response.class == String
-      response.each do |key, value|
-        schema[key] = {
-          type: 'string',
-          example: value.to_s
-        }
+    def self.value_schema(value)
+      case value
+      when String
+        { type: 'string', example: value }
+      when Integer
+        { type: 'integer', example: value }
+      when Float
+        { type: 'float', example: value }
+      when Array
+        if value.empty?
+          { type: 'array', items: {} }
+        else
+          { type: 'array', items: value.map { |elem| value_schema(elem) } }
+        end
+      when Hash
+        value.each_with_object({}) do |(key, val), schema_hash|
+          schema_hash[key] = value_schema(val)
+        end
+      else
+        { type: value.class.name.downcase, example: value.to_s }
       end
-      schema
+    end
+
+    def self.response_to_schema(response)
+      return nil if response.nil?
+
+      case response
+      when Hash
+        response.empty? ? nil : response.each_with_object({}) do |(key, val), schema_hash|
+          schema_hash[key] = value_schema(val)
+        end
+      else
+        value_schema(response)
+      end
     end
 
     def self.map_type(type)
