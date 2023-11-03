@@ -197,39 +197,27 @@ module OpenApiDocumentation
       TrueClass => true
     }.freeze
 
-    def self.value_schema(value)
-      case value
+    def self.response_to_schema(response)
+      case response
+      when NilClass
       when String
-        { type: 'string', example: value }
+        { type: 'string', example: response }
       when Integer
-        { type: 'integer', example: value }
+        { type: 'integer', example: response }
       when Float
-        { type: 'float', example: value }
+        { type: 'float', example: response }
       when Array
-        if value.empty?
+        if response.empty?
           { type: 'array', items: {} }
         else
-          { type: 'array', items: value.map { |elem| value_schema(elem) } }
+          { type: 'array', items: response.map { |elem| response_to_schema(elem) } }
         end
       when Hash
-        value.each_with_object({}) do |(key, val), schema_hash|
-          schema_hash[key] = value_schema(val)
+        response.each_with_object({}) do |(key, val), schema_hash|
+          schema_hash[key] = response_to_schema(val)
         end
       else
-        { type: value.class.name.downcase, example: value.to_s }
-      end
-    end
-
-    def self.response_to_schema(response)
-      return nil if response.nil?
-
-      case response
-      when Hash
-        response.empty? ? nil : response.each_with_object({}) do |(key, val), schema_hash|
-          schema_hash[key] = value_schema(val)
-        end
-      else
-        value_schema(response)
+        { type: response.class.name.downcase, example: response.to_s }
       end
     end
 
