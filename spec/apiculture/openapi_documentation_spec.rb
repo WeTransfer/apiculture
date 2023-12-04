@@ -43,7 +43,7 @@ describe 'Apiculture.api_documentation' do
 
       desc 'Pancake api method definition has frozen strings'.freeze
       route_param :topping_id, 'Pancake topping ID'.freeze, Integer, cast: :to_i
-      api_method :get, '/pancake/with/:topping_id'.freeze do |topping_id|
+      api_method :get, '/pancake/frozen/:topping_id'.freeze do |topping_id|
       end
     end
   end
@@ -85,7 +85,7 @@ describe 'Apiculture.api_documentation' do
       end
 
       it 'will have 4 paths' do
-        expect(paths.size).to eq(3)
+        expect(paths.size).to eq(4)
       end
 
       context 'POST /pancakes' do
