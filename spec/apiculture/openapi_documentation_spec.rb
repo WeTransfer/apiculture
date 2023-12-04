@@ -40,6 +40,11 @@ describe 'Apiculture.api_documentation' do
       route_param :topping_id, 'Pancake topping ID', Integer, cast: :to_i
       api_method :get, '/pancake/with/:topping_id' do |topping_id|
       end
+
+      desc 'Pancake api method definition has frozen strings'.freeze
+      route_param :topping_id, 'Pancake topping ID'.freeze, Integer, cast: :to_i
+      api_method :get, '/pancake/with/:topping_id'.freeze do |topping_id|
+      end
     end
   end
 
