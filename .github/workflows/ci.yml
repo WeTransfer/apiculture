@@ -1,0 +1,15 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - master
+    # dependabot PRs only have read permission so cannot run this workflow.
+    paths-ignore:
+      - "**/*.md"
+      - ".gitignore"
+      - "README.md"
+      - ".env.example"
+      - "docs/*"
+jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
