@@ -15,13 +15,7 @@ Gem::Specification.new do |s|
   # Prevent pushing this gem to RubyGems.org.
   # To allow pushes either set the 'allowed_push_host'
   # To allow pushing to a single host or delete this section to allow pushing to any host.
-  if s.respond_to?(:metadata)
-    s.metadata['allowed_push_host'] = 'https://rubygems.org'
-  else
-    raise 'RubyGems 2.0 or newer is required to protect against ' \
-      'public gem pushes.'
-  end
-
+  s.metadata['allowed_push_host'] = 'https://rubygems.org'
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^spec/}) }
   s.extra_rdoc_files = [
     'LICENSE.txt',
