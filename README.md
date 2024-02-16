@@ -2,7 +2,7 @@
 
 A little toolkit for building RESTful API backends on top of Rack.
 
-[![Build Status](https://travis-ci.org/WeTransfer/apiculture.svg?branch=master)](https://travis-ci.org/WeTransfer/apiculture)
+[![CI](https://github.com/WeTransfer/apiculture/actions/workflows/ci.yml/badge.svg)](https://github.com/WeTransfer/apiculture/actions/workflows/ci.yml)
 
 ## Ideas
 
