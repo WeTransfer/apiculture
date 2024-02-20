@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.summary = 'Sweet API sauce on top of Rack'
 
   s.add_runtime_dependency 'builder', '~> 3'
-  s.add_runtime_dependency 'github-markup', '~> 3'
+  s.add_runtime_dependency 'github-markup', '>= 3', '< 5'
   s.add_runtime_dependency 'mustache', '~> 1'
   s.add_runtime_dependency 'mustermann', '~> 3'
   s.add_runtime_dependency 'rdiscount', '~> 2'
