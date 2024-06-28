@@ -3,7 +3,7 @@ require'mustermann'
 class Apiculture::App
 
   class << self
-    def use(middlreware_factory, middleware_options, &middleware_blk)
+    def use(middleware_factory, middleware_options, &middleware_blk)
       @middleware_configurations ||= []
       @middleware_configurations << [middleware_factory, middleware_options, middleware_blk]
     end
