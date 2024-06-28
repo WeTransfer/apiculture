@@ -15,6 +15,12 @@ module Apiculture
     super
   end
 
+  class Void
+    def <<(_item); end
+    def map; []; end
+    def select; []; end
+  end
+
   IDENTITY_PROC = ->(arg) { arg }
 
   AC_APPLY_TYPECAST_PROC = ->(cast_proc_or_method, v) {
@@ -276,7 +282,16 @@ module Apiculture
   end
 
   def apiculture_stack
-    @apiculture_actions_and_docs ||= []
+    if environment == "development"
+      @apiculture_actions_and_docs ||= []
+    else
+      @apiculture_actions_and_docs ||= Void.new
+    end
     @apiculture_actions_and_docs
+  end
+
+  # Based on the RACK_ENV it will generate documentation or not
+  def environment
+    @environment ||= ENV.fetch("RACK_ENV", "development")
   end
 end

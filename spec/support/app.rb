@@ -12,6 +12,11 @@ class Apiculture::App
       @middleware_configurations || []
     end
 
+    # For testing only
+    def set_environment(env)
+      @environment ||= env
+    end
+
     def get(url, **options, &handler_blk)
       define_action :get, url, **options, &handler_blk
     end
