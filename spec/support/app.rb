@@ -3,13 +3,18 @@ require'mustermann'
 class Apiculture::App
 
   class << self
-    def use(middlreware_factory, middleware_options, &middleware_blk)
+    def use(middleware_factory, middleware_options, &middleware_blk)
       @middleware_configurations ||= []
       @middleware_configurations << [middleware_factory, middleware_options, middleware_blk]
     end
 
     def middleware_configurations
       @middleware_configurations || []
+    end
+
+    # For testing only
+    def set_environment(env)
+      @environment ||= env
     end
 
     def get(url, **options, &handler_blk)

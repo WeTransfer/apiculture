@@ -2,7 +2,6 @@
 module Apiculture
   require_relative 'apiculture/version'
   require_relative 'apiculture/indifferent_hash'
-  require_relative 'apiculture/app'
   require_relative 'apiculture/action'
   require_relative 'apiculture/sinatra_instance_methods'
   require_relative 'apiculture/action_definition'
@@ -14,6 +13,12 @@ module Apiculture
   def self.extended(in_class)
     in_class.send(:include, SinatraInstanceMethods)
     super
+  end
+
+  class Void
+    def <<(_item); end
+    def map; []; end
+    def select; []; end
   end
 
   IDENTITY_PROC = ->(arg) { arg }
@@ -277,7 +282,16 @@ module Apiculture
   end
 
   def apiculture_stack
-    @apiculture_actions_and_docs ||= []
+    if environment == "development"
+      @apiculture_actions_and_docs ||= []
+    else
+      @apiculture_actions_and_docs ||= Void.new
+    end
     @apiculture_actions_and_docs
+  end
+
+  # Based on the RACK_ENV it will generate documentation or not
+  def environment
+    @environment ||= ENV.fetch("RACK_ENV", "development")
   end
 end
