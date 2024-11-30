@@ -83,7 +83,7 @@ module OpenApiDocumentation
       @path.route_parameters.each do |parameter|
         # This is a bit confusing but naming is a little different between
         # apiculture and openapi
-        full_path.gsub!(":#{parameter.name}", "\{#{parameter.name}\}")
+        full_path = full_path.gsub(":#{parameter.name}", "\{#{parameter.name}\}")
       end
       Util.clean_path("#{@prefix}#{full_path}")
     end
